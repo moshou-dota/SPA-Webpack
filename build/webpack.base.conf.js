@@ -30,7 +30,7 @@ module.exports = {
         include: [resolve('src')]
       },
       {
-        test: /\.(png|jpge?g|gif|scg)(\?.*)?$/,
+        test: /\.(png|jpe?g|gif|scg)(\?.*)?$/,
         loader: 'url-loader',
         options: {
           limit: 10000,
@@ -43,6 +43,16 @@ module.exports = {
         options: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+        }
+      },
+      {
+        test: /\.html$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attributes: true,
+            minimize: process.env.NODE_ENV === 'production'
+          }
         }
       }
     ]

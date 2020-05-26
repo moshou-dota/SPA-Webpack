@@ -1,2 +1,2 @@
 # SPA-Webpack
-webpack单页面配置demo
+webpack4单页面配置demo

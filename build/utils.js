@@ -8,7 +8,7 @@ exports.assetsPath = function (_path) {
   return path.posix.join(assetsSubDirectory, _path)
 }
 
-exports.cssLoader = function (options) {
+exports.cssLoader = function (options = {}) {
   const cssLoader = {
     loader: 'css-loader',
     options: {
@@ -16,20 +16,22 @@ exports.cssLoader = function (options) {
     }
   }
 
-  const postLoader = {
+  const postCssLoader = {
     loader: 'postcss-loader',
     options: {
       sourceMap: options.sourceMap
     }
   }
 
-  function generateLoaders (name, option) {
-    const loaders = options.usePostCSS? [postLoader, cssLoader]: [cssLoader]
+  function generateLoaders (loader, option) {
+    const loaders = options.usePostCSS? [cssLoader, postCssLoader]: [cssLoader]
 
-    if (name) {
-      loaders.unshift({
-        loader: name,
-        options: option || {}
+    if (loader) {
+      loaders.push({
+        loader: `${loader}-loader`,
+        options: Object.assign({}, option, {
+          sourceMap: options.sourceMap
+        })
       })
     }
 
@@ -37,7 +39,7 @@ exports.cssLoader = function (options) {
       return [{
         loader: miniCssExtractPlugin.loader,
         options: {
-          // publicPath: '' // 如果对分离的css中的其他静态资源路径需要特殊处理的，可在此修改，如背景图片的地址
+          publicPath: '../../' // 如果对分离的css中的其他静态资源路径需要特殊处理的，可在此修改，如背景图片的地址
         }
       }].concat(loaders)
     } else {
@@ -58,7 +60,7 @@ exports.styleLoader = function (options) {
   const loaders = exports.cssLoader(options)
   for(let key in loaders) {
     output.push({
-      test: new RegExp(`/\.${key}$/`),
+      test: new RegExp(`\\.${key}$`), // 注意两个斜杠
       use: loaders[key]
     })
   }
